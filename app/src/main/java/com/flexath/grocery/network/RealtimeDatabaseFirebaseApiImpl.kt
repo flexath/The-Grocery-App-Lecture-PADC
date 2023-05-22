@@ -1,5 +1,6 @@
 package com.flexath.grocery.network
 
+import android.graphics.Bitmap
 import android.util.Log
 import com.flexath.grocery.data.vos.GroceryVO
 import com.google.firebase.database.DataSnapshot
@@ -7,14 +8,17 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import java.io.ByteArrayOutputStream
+import java.util.UUID
 
 object RealtimeDatabaseFirebaseApiImpl : FirebaseApi {
 
 //    private val database: DatabaseReference = Firebase.database.reference
 
     private var database: DatabaseReference
+
+    private var storageRef = FirebaseStorage.getInstance().reference
 
     init {
         val databaseUrl =
@@ -43,11 +47,32 @@ object RealtimeDatabaseFirebaseApiImpl : FirebaseApi {
         })
     }
 
-    override fun addGrocery(name: String, description: String, amount: Int) {
-        database.child("groceries").child(name).setValue(GroceryVO(name, description, amount))
+    override fun addGrocery(name: String, description: String, amount: Int , image:String) {
+        database.child("groceries").child(name).setValue(GroceryVO(name, description, amount,image))
     }
 
     override fun removeGrocery(name: String) {
         database.child("groceries").child(name).removeValue()
+    }
+
+    override fun uploadImageAndEditGrocery(bitmap: Bitmap, grocery: GroceryVO) {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+        val data = baos.toByteArray()
+
+        val imageRef = storageRef.child("images/${UUID.randomUUID()}")
+        val uploadTask = imageRef.putBytes(data)
+        uploadTask.addOnFailureListener {
+            Log.i("FileUpload","File uploaded failed")
+        }.addOnSuccessListener {
+            Log.i("FileUpload","File uploaded successful")
+        }
+
+        val urlTask = uploadTask.continueWithTask {
+            return@continueWithTask imageRef.downloadUrl
+        }.addOnCompleteListener {
+            val imageUrl = it.result?.toString()
+            addGrocery(grocery.name ?: "",grocery.description ?: "",grocery.amount ?: 0,imageUrl ?: "")
+        }
     }
 }

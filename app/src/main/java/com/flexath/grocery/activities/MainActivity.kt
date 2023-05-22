@@ -1,7 +1,12 @@
 package com.flexath.grocery.activities
 
+import android.app.Activity
 import android.app.ProgressDialog.show
+import android.content.Intent
+import android.graphics.ImageDecoder
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +20,8 @@ import com.flexath.grocery.mvp.presenters.MainPresenter
 import com.flexath.grocery.mvp.presenters.impls.MainPresenterImpl
 import com.flexath.grocery.mvp.views.MainView
 import com.google.android.material.snackbar.Snackbar
+import java.io.IOException
+import java.lang.Exception
 
 class MainActivity : BaseActivity(), MainView {
 
@@ -84,5 +91,44 @@ class MainActivity : BaseActivity(), MainView {
 
     override fun showErrorMessage(message: String) {
         Snackbar.make(window.decorView, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun showGallery() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent,"Select Upload Image"),100)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == 100 && resultCode == Activity.RESULT_OK) {
+            if (data == null || data.data == null) {
+                return
+            }
+
+            val filePath = data.data
+
+            try {
+                filePath?.let { fileUrl ->
+                    if(Build.VERSION.SDK_INT >= 29) {
+                        val source = ImageDecoder.createSource(this.contentResolver,fileUrl)
+                        val bitmap = ImageDecoder.decodeBitmap(source)
+                        mPresenter.onPhotoTaken(bitmap)
+                    } else {
+                        val bitmap = MediaStore.Images.Media.getBitmap(
+                            applicationContext.contentResolver,fileUrl
+                        )
+                        mPresenter.onPhotoTaken(bitmap)
+                    }
+                }
+
+
+            }
+            catch (e:IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.flexath.grocery.viewholders
 
+import android.util.Log
 import android.view.View
+import com.bumptech.glide.Glide
 import com.flexath.grocery.data.vos.GroceryVO
 import com.flexath.grocery.databinding.ViewHolderGroceryItemBinding
 import com.flexath.grocery.delegates.GroceryViewItemActionDelegate
@@ -25,5 +27,13 @@ class GroceryViewHolder(itemView: View,private val delegate: GroceryViewItemActi
         binding.btnEdit.setOnClickListener {
             delegate.onTapEditGrocery(data.name ?: "",data.description ?: "",data.amount ?: 0)
         }
+
+        binding.btnFileUpload.setOnClickListener {
+            delegate.onTapFileUpload(data)
+        }
+
+        Glide.with(itemView.context)
+            .load(data.image)
+            .into(binding.ivGroceryImage)
     }
 }

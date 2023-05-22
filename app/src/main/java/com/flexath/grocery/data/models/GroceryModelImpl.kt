@@ -1,5 +1,6 @@
 package com.flexath.grocery.data.models
 
+import android.graphics.Bitmap
 import com.flexath.grocery.data.vos.GroceryVO
 import com.flexath.grocery.network.CloudFirestoreFirebaseApiImpl
 import com.flexath.grocery.network.FirebaseApi
@@ -14,11 +15,15 @@ object GroceryModelImpl : GroceryModel {
         mFirebaseApi.getGroceries(onSuccess, onFailure)
     }
 
-    override fun addGrocery(name: String, description: String, amount: Int) {
-        mFirebaseApi.addGrocery(name,description,amount)
+    override fun addGrocery(name: String, description: String, amount: Int,image:String) {
+        mFirebaseApi.addGrocery(name,description,amount,image)
     }
 
     override fun removeGrocery(name: String) {
         mFirebaseApi.removeGrocery(name)
+    }
+
+    override fun uploadImageAndUpdateGrocery(image: Bitmap,grocery: GroceryVO, ) {
+        mFirebaseApi.uploadImageAndEditGrocery(image,grocery)
     }
 }

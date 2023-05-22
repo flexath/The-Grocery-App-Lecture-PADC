@@ -6,5 +6,6 @@ import com.google.firebase.database.IgnoreExtraProperties
 data class GroceryVO (
     val name: String? = "",
     val description: String? = "",
-    val amount: Int? = 0
+    val amount: Int? = 0,
+    val image:String? = ""
 )
