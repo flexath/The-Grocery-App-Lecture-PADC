@@ -3,6 +3,7 @@ package com.flexath.grocery.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import com.flexath.grocery.R
 import com.flexath.grocery.databinding.ActivityLoginBinding
 import com.flexath.grocery.mvp.presenters.LoginPresenter
@@ -30,6 +31,8 @@ class LoginActivity : BaseActivity(), LoginView {
 
         setUpPresenter()
         setUpActionListeners()
+
+        mPresenter.onUiReady(this)
     }
 
     private fun setUpActionListeners() {
@@ -55,6 +58,6 @@ class LoginActivity : BaseActivity(), LoginView {
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(this,error,Toast.LENGTH_SHORT).show()
     }
 }

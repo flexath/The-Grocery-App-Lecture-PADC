@@ -7,9 +7,15 @@ import com.flexath.grocery.data.vos.GroceryVO
 import com.flexath.grocery.delegates.GroceryViewItemActionDelegate
 import com.flexath.grocery.viewholders.GroceryViewHolder
 
-class GroceryAdapter(private val delegate:GroceryViewItemActionDelegate) : BaseRecyclerAdapter<GroceryViewHolder, GroceryVO>() {
+class GroceryAdapter(private val delegate: GroceryViewItemActionDelegate,private val number:Long) : BaseRecyclerAdapter<GroceryViewHolder, GroceryVO>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroceryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_holder_grocery_item,parent,false)
-        return GroceryViewHolder(view, delegate)
+        return if(number == 0L) {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_holder_grocery_item,parent,false)
+            GroceryViewHolder(view, delegate)
+        } else {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.view_holder_grocery_item_grid,parent,false)
+            GroceryViewHolder(view, delegate)
+        }
+
     }
 }

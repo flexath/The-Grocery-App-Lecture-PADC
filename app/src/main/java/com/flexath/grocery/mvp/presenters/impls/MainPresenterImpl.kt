@@ -1,7 +1,6 @@
 package com.flexath.grocery.mvp.presenters.impls
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import com.flexath.grocery.data.models.AuthenticationModel
 import com.flexath.grocery.data.models.AuthenticationModelImpl
@@ -41,6 +40,9 @@ class MainPresenterImpl : MainPresenter, AbstractBasePresenter<MainView>() {
                 mView.showErrorMessage(it)
             }
         )
+
+        mView.displayToolbarTitle(mGroceryModel.getAppNameFromRemoteConfig())
+        mView.getRecyclerViewLayoutNumber(mGroceryModel.getRecyclerViewLayoutNumber())
     }
 
     override fun onTapDeleteGrocery(name: String) {

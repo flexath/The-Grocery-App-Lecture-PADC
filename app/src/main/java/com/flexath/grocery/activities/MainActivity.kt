@@ -1,16 +1,16 @@
 package com.flexath.grocery.activities
 
 import android.app.Activity
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.content.Intent
 import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexath.grocery.R
 import com.flexath.grocery.adapters.GroceryAdapter
@@ -22,7 +22,6 @@ import com.flexath.grocery.mvp.presenters.impls.MainPresenterImpl
 import com.flexath.grocery.mvp.views.MainView
 import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
-import java.lang.Exception
 
 class MainActivity : BaseActivity(), MainView {
 
@@ -45,7 +44,6 @@ class MainActivity : BaseActivity(), MainView {
 
         setSupportActionBar(findViewById(R.id.toolbar))
         setUpPresenter()
-        setUpRecyclerView()
 
         setUpActionListeners()
 
@@ -66,11 +64,9 @@ class MainActivity : BaseActivity(), MainView {
         binding.tvUserName.text =username
     }
 
-    private fun setUpRecyclerView() {
-        mAdapter = GroceryAdapter(mPresenter)
+    private fun setUpRecyclerView(number: Long) {
+        mAdapter = GroceryAdapter(mPresenter,number)
         binding.rvGroceries.adapter = mAdapter
-        binding.rvGroceries.layoutManager =
-            LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -103,6 +99,22 @@ class MainActivity : BaseActivity(), MainView {
         Snackbar.make(window.decorView, message, Snackbar.LENGTH_LONG).show()
     }
 
+    override fun displayToolbarTitle(title: String) {
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title = title
+    }
+
+    override fun getRecyclerViewLayoutNumber(number: Long) {
+        setUpRecyclerView(number)
+        if(number == 0L) {
+            binding.rvGroceries.layoutManager =
+                LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
+        } else {
+            binding.rvGroceries.layoutManager =
+                GridLayoutManager(this,2)
+        }
+    }
+
     override fun showGallery() {
         val intent = Intent()
         intent.type = "image/*"
@@ -111,9 +123,10 @@ class MainActivity : BaseActivity(), MainView {
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(this,error,Toast.LENGTH_SHORT).show()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
