@@ -2,6 +2,7 @@ package com.flexath.grocery.activities
 
 import android.app.Activity
 import android.app.ProgressDialog.show
+import android.content.Context
 import android.content.Intent
 import android.graphics.ImageDecoder
 import android.os.Build
@@ -30,6 +31,12 @@ class MainActivity : BaseActivity(), MainView {
 
     private lateinit var binding: ActivityMainBinding
 
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,6 +61,9 @@ class MainActivity : BaseActivity(), MainView {
             GroceryDialogFragment.newFragment()
                 .show(supportFragmentManager, GroceryDialogFragment.TAG_ADD_GROCERY_DIALOG)
         }
+
+        val username = "Welcome ${mPresenter.showUserName()}"
+        binding.tvUserName.text =username
     }
 
     private fun setUpRecyclerView() {
@@ -98,6 +108,10 @@ class MainActivity : BaseActivity(), MainView {
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
         startActivityForResult(Intent.createChooser(intent,"Select Upload Image"),100)
+    }
+
+    override fun showError(error: String) {
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -24,11 +24,22 @@
         android:background="@android:color/white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_medium_2"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvUserName"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/text_regular_3x"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginStart="@dimen/margin_large"
+            android:layout_height="wrap_content"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvGroceries"
             android:layout_width="match_parent"
+            android:layout_below="@+id/tvUserName"
             android:layout_height="match_parent"
             android:padding="@dimen/margin_medium_2" />
 
@@ -42,7 +53,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/white"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:contentDescription="@string/to_add_new_grocery_lbl" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

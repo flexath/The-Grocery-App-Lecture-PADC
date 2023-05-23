@@ -3,6 +3,8 @@ package com.flexath.grocery.mvp.presenters.impls
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.LifecycleOwner
+import com.flexath.grocery.data.models.AuthenticationModel
+import com.flexath.grocery.data.models.AuthenticationModelImpl
 import com.flexath.grocery.data.models.GroceryModelImpl
 import com.flexath.grocery.data.vos.GroceryVO
 import com.flexath.grocery.mvp.presenters.AbstractBasePresenter
@@ -12,6 +14,7 @@ import com.flexath.grocery.mvp.views.MainView
 class MainPresenterImpl : MainPresenter, AbstractBasePresenter<MainView>() {
 
     private val mGroceryModel = GroceryModelImpl
+    private val mAuthenticationModel: AuthenticationModel = AuthenticationModelImpl
 
     private var mGroceryFromFileUpload: GroceryVO? = null
 
@@ -23,6 +26,10 @@ class MainPresenterImpl : MainPresenter, AbstractBasePresenter<MainView>() {
         mGroceryFromFileUpload?.let { grocery ->
             mGroceryModel.uploadImageAndUpdateGrocery(bitmap, grocery)
         }
+    }
+
+    override fun showUserName(): String {
+        return mAuthenticationModel.getUserName()
     }
 
     override fun onUiReady(owner: LifecycleOwner) {
