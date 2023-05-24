@@ -1,7 +1,9 @@
 package com.flexath.grocery.mvp.presenters.impls
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.LifecycleOwner
+import com.flexath.grocery.analytics.SCREEN_HOME
 import com.flexath.grocery.data.models.AuthenticationModel
 import com.flexath.grocery.data.models.AuthenticationModelImpl
 import com.flexath.grocery.data.models.GroceryModelImpl
@@ -31,7 +33,8 @@ class MainPresenterImpl : MainPresenter, AbstractBasePresenter<MainView>() {
         return mAuthenticationModel.getUserName()
     }
 
-    override fun onUiReady(owner: LifecycleOwner) {
+    override fun onUiReady(context:Context,owner: LifecycleOwner) {
+        sendEventsToFirebaseAnalytics(context, SCREEN_HOME)
         mGroceryModel.getGroceries(
             onSuccess = {
                 mView.showGroceryData(it)

@@ -9,7 +9,10 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.flexath.grocery.R
@@ -47,7 +50,9 @@ class MainActivity : BaseActivity(), MainView {
 
         setUpActionListeners()
 
-        mPresenter.onUiReady(this)
+        mPresenter.onUiReady(this,this)
+
+        addCrashButton()
     }
 
     private fun setUpPresenter() {
@@ -67,6 +72,18 @@ class MainActivity : BaseActivity(), MainView {
     private fun setUpRecyclerView(number: Long) {
         mAdapter = GroceryAdapter(mPresenter,number)
         binding.rvGroceries.adapter = mAdapter
+    }
+    private fun addCrashButton(){
+        val crashButton = Button(this)
+        crashButton.text = "Test Crash"
+        crashButton.setOnClickListener {
+            throw RuntimeException("Test Crash") // Force a crash
+        }
+
+        addContentView(crashButton, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT))
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
