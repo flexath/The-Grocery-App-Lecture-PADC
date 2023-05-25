@@ -3,12 +3,14 @@ package com.flexath.grocery.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.flexath.grocery.R
 import com.flexath.grocery.databinding.ActivityLoginBinding
 import com.flexath.grocery.mvp.presenters.LoginPresenter
 import com.flexath.grocery.mvp.presenters.impls.LoginPresenterImpl
 import com.flexath.grocery.mvp.views.LoginView
+import com.google.firebase.messaging.FirebaseMessaging
 
 class LoginActivity : BaseActivity(), LoginView {
 
@@ -33,6 +35,10 @@ class LoginActivity : BaseActivity(), LoginView {
         setUpActionListeners()
 
         mPresenter.onUiReady(this,this)
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            Log.d("fbToken",it.result)
+        }
     }
 
     private fun setUpActionListeners() {

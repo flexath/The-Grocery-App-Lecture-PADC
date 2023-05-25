@@ -73,17 +73,11 @@ class MainActivity : BaseActivity(), MainView {
         mAdapter = GroceryAdapter(mPresenter,number)
         binding.rvGroceries.adapter = mAdapter
     }
+
     private fun addCrashButton(){
-        val crashButton = Button(this)
-        crashButton.text = "Test Crash"
-        crashButton.setOnClickListener {
-            throw RuntimeException("Test Crash") // Force a crash
+        binding.crashButton.setOnClickListener {
+            throw RuntimeException("Test Crash")
         }
-
-        addContentView(crashButton, ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT))
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

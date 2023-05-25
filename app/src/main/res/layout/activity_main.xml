@@ -56,5 +56,13 @@
         app:srcCompat="@android:drawable/ic_input_add"
         android:contentDescription="@string/to_add_new_grocery_lbl" />
 
+    <Button
+        android:id="@+id/crashButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/margin_large"
+        android:text="Crash the app"/>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
