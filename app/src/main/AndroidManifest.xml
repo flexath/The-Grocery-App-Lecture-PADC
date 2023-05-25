@@ -22,6 +22,7 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
@@ -41,9 +42,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"/>
+                <data android:host="flexath.com"/>
+                <data android:scheme="http"/>
+                <data android:host="flexath.com"/>
+            </intent-filter>
+
+        </activity>
 
         <service
             android:name=".fcm.GroceryMessagingService"

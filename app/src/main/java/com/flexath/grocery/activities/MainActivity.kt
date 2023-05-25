@@ -7,6 +7,7 @@ import android.graphics.ImageDecoder
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import com.flexath.grocery.mvp.presenters.MainPresenter
 import com.flexath.grocery.mvp.presenters.impls.MainPresenterImpl
 import com.flexath.grocery.mvp.views.MainView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import java.io.IOException
 
 class MainActivity : BaseActivity(), MainView {
@@ -50,9 +52,23 @@ class MainActivity : BaseActivity(), MainView {
 
         setUpActionListeners()
 
-        mPresenter.onUiReady(this,this)
+        mPresenter.onUiReady(this, this)
 
         addCrashButton()
+
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener {
+                val deepLink = it.link
+                deepLink?.let { deepLinkUri ->
+                    Log.d("deepLink", deepLinkUri.toString())
+                }
+            }
+            .addOnFailureListener { error ->
+                error.localizedMessage?.let {
+                    Log.d("error", it)
+                }
+            }
     }
 
     private fun setUpPresenter() {
@@ -66,15 +82,15 @@ class MainActivity : BaseActivity(), MainView {
         }
 
         val username = "Welcome ${mPresenter.showUserName()}"
-        binding.tvUserName.text =username
+        binding.tvUserName.text = username
     }
 
     private fun setUpRecyclerView(number: Long) {
-        mAdapter = GroceryAdapter(mPresenter,number)
+        mAdapter = GroceryAdapter(mPresenter, number)
         binding.rvGroceries.adapter = mAdapter
     }
 
-    private fun addCrashButton(){
+    private fun addCrashButton() {
         binding.crashButton.setOnClickListener {
             throw RuntimeException("Test Crash")
         }
@@ -99,9 +115,9 @@ class MainActivity : BaseActivity(), MainView {
     override fun showGroceryDialog(name: String, description: String, amount: Int) {
         val dialog = GroceryDialogFragment.newFragment()
         val bundle = Bundle()
-        bundle.putString(GroceryDialogFragment.BUNDLE_NAME,name)
-        bundle.putString(GroceryDialogFragment.BUNDLE_DESCRIPTION,description)
-        bundle.putInt(GroceryDialogFragment.BUNDLE_AMOUNT,amount)
+        bundle.putString(GroceryDialogFragment.BUNDLE_NAME, name)
+        bundle.putString(GroceryDialogFragment.BUNDLE_DESCRIPTION, description)
+        bundle.putInt(GroceryDialogFragment.BUNDLE_AMOUNT, amount)
         dialog.arguments = bundle
         dialog.show(supportFragmentManager, GroceryDialogFragment.TAG_ADD_GROCERY_DIALOG)
     }
@@ -117,12 +133,12 @@ class MainActivity : BaseActivity(), MainView {
 
     override fun getRecyclerViewLayoutNumber(number: Long) {
         setUpRecyclerView(number)
-        if(number == 0L) {
+        if (number == 0L) {
             binding.rvGroceries.layoutManager =
                 LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
         } else {
             binding.rvGroceries.layoutManager =
-                GridLayoutManager(this,2)
+                GridLayoutManager(this, 2)
         }
     }
 
@@ -130,18 +146,18 @@ class MainActivity : BaseActivity(), MainView {
         val intent = Intent()
         intent.type = "image/*"
         intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent,"Select Upload Image"),100)
+        startActivityForResult(Intent.createChooser(intent, "Select Upload Image"), 100)
     }
 
     override fun showError(error: String) {
-        Toast.makeText(this,error,Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
     }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == 100 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
             if (data == null || data.data == null) {
                 return
             }
@@ -150,21 +166,20 @@ class MainActivity : BaseActivity(), MainView {
 
             try {
                 filePath?.let { fileUrl ->
-                    if(Build.VERSION.SDK_INT >= 29) {
-                        val source = ImageDecoder.createSource(this.contentResolver,fileUrl)
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        val source = ImageDecoder.createSource(this.contentResolver, fileUrl)
                         val bitmap = ImageDecoder.decodeBitmap(source)
                         mPresenter.onPhotoTaken(bitmap)
                     } else {
                         val bitmap = MediaStore.Images.Media.getBitmap(
-                            applicationContext.contentResolver,fileUrl
+                            applicationContext.contentResolver, fileUrl
                         )
                         mPresenter.onPhotoTaken(bitmap)
                     }
                 }
 
 
-            }
-            catch (e:IOException) {
+            } catch (e: IOException) {
                 e.printStackTrace()
             }
         }

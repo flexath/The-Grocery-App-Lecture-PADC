@@ -60,6 +60,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-config-ktx'
     implementation 'com.google.firebase:firebase-inappmessaging-display-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
 
     implementation 'com.google.mlkit:face-detection:16.0.2'
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.1'
