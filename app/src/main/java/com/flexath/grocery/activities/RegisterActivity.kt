@@ -38,6 +38,10 @@ class RegisterActivity : BaseActivity(), RegisterView {
                 binding.etUserName.text.toString()
             )
         }
+
+        binding.ivLogo.setOnClickListener {
+            startActivity(MLKitDetectionActivity.newIntent(this))
+        }
     }
 
     private fun setUpPresenter() {
